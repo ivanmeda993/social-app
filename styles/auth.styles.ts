@@ -52,6 +52,7 @@ export const styles = StyleSheet.create({
     width: "100%",
     paddingHorizontal: 24,
     paddingBottom: 40,
+    paddingTop: 20,
     alignItems: "center",
   },
   googleButton: {
@@ -91,5 +92,8 @@ export const styles = StyleSheet.create({
     fontSize: 12,
     color: COLORS.grey,
     maxWidth: 280,
+  },
+  termsLink: {
+    color: COLORS.primary,
   },
 });
