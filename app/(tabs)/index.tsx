@@ -1,12 +1,14 @@
-import { Link } from "expo-router";
-import { Text, View } from "react-native";
+import { useAuth } from "@clerk/clerk-expo";
+import { Text, TouchableOpacity, View } from "react-native";
 
 export default function Index() {
+  const { signOut } = useAuth();
+
   return (
     <View>
-      <Text>Edit app/index.tsx to edit this screen.</Text>
-      <Link href="/notifications">Go to notifications</Link>
-      <Link href="/profile">Go to profile</Link>
+      <TouchableOpacity onPress={() => signOut()}>
+        <Text>Sign out</Text>
+      </TouchableOpacity>
     </View>
   );
 }
