@@ -1,18 +1,17 @@
 import Loader from "@/components/loader";
 import Post from "@/components/post";
-import Story from "@/components/story";
-import { STORIES } from "@/constants/mock-data";
+import StoryList from "@/components/story-list";
 import { COLORS } from "@/constants/theme";
 import { api } from "@/convex/_generated/api";
 import { styles } from "@/styles/feed.styles";
 import { useAuth } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
+import { FlashList } from "@shopify/flash-list";
 import { useQuery } from "convex/react";
-import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 
 export default function Index() {
   const { signOut } = useAuth();
-
   const posts = useQuery(api.posts.getFeedPosts);
 
   if (posts === undefined) return <Loader />;
@@ -28,23 +27,13 @@ export default function Index() {
         </TouchableOpacity>
       </View>
 
-      {/* posts with stories as header */}
-      <FlatList
+      <FlashList
         data={posts}
         renderItem={({ item }) => <Post post={item} />}
-        keyExtractor={(item) => item._id}
-        ListHeaderComponent={() => (
-          <FlatList
-            data={STORIES}
-            renderItem={({ item }) => <Story story={item} />}
-            keyExtractor={(item) => item.id}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.storiesContainer}
-          />
-        )}
+        estimatedItemSize={2}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.postsContentContainer}
+        ListHeaderComponent={<StoryList />}
       />
     </View>
   );

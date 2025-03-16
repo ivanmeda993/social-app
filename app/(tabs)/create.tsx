@@ -73,6 +73,9 @@ const CreateScreen = () => {
         content,
       });
 
+      setContent("");
+      setImage(null);
+
       router.push("/(tabs)");
     } catch (error) {
       console.error(error);

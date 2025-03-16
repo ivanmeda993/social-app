@@ -47,7 +47,8 @@
     "svix": "^1.61.4",
     "expo-image-picker": "~16.0.6",
     "expo-image": "~2.0.6",
-    "expo-file-system": "~18.0.11"
+    "expo-file-system": "~18.0.11",
+    "@shopify/flash-list": "1.7.3"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

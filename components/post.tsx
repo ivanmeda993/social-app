@@ -1,7 +1,9 @@
 import { COLORS } from "@/constants/theme";
+import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { styles } from "@/styles/feed.styles";
 import { Ionicons } from "@expo/vector-icons";
+import { useMutation } from "convex/react";
 import { Image } from "expo-image";
 import { Link } from "expo-router";
 import { Text, TouchableOpacity, View } from "react-native";
@@ -27,6 +29,16 @@ type PostProps = {
   };
 };
 const Post = ({ post }: PostProps) => {
+  const toggleLikeMutation = useMutation(api.posts.toggleLike);
+
+  const handleLike = async () => {
+    try {
+      await toggleLikeMutation({ postId: post._id });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <View style={styles.post}>
       {/* header */}
@@ -62,12 +74,16 @@ const Post = ({ post }: PostProps) => {
       {/* actions */}
       <View style={styles.postActions}>
         <View style={styles.postActionsLeft}>
-          <TouchableOpacity>
-            <Ionicons name="heart-outline" size={24} color={COLORS.white} />
+          <TouchableOpacity onPress={handleLike}>
+            <Ionicons
+              name={post.isLiked ? "heart" : "heart-outline"}
+              size={24}
+              color={post.isLiked ? COLORS.primary : COLORS.white}
+            />
           </TouchableOpacity>
           <TouchableOpacity>
             <Ionicons
-              name="chatbubble-ellipses-outline"
+              name="chatbubble-outline"
               size={22}
               color={COLORS.white}
             />
@@ -80,7 +96,11 @@ const Post = ({ post }: PostProps) => {
 
       {/* post info */}
       <View style={styles.postInfo}>
-        <Text style={styles.likesText}>Be the first to like this post</Text>
+        <Text style={styles.likesText}>
+          {post.likes === 0
+            ? "Be the first to like this post"
+            : `${post.likes} likes`}
+        </Text>
         {post.caption && (
           <View style={styles.captionContainer}>
             <Text style={styles.captionUsername}>{post.author?.username}</Text>
