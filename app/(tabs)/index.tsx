@@ -1,5 +1,6 @@
 import CommentsModal from "@/components/comments-modal";
 import Loader from "@/components/loader";
+import { NotDocumentsFound } from "@/components/not-documents-found";
 import Post from "@/components/post";
 import StoryList from "@/components/story-list";
 import { COLORS } from "@/constants/theme";
@@ -19,7 +20,7 @@ export default function Index() {
   const posts = useQuery(api.posts.getFeedPosts);
 
   if (posts === undefined) return <Loader />;
-  if (posts.length === 0) return <NoPostsFound />;
+  if (posts.length === 0) return <NotDocumentsFound text="No posts found" />;
 
   return (
     <Fragment>
@@ -46,20 +47,3 @@ export default function Index() {
     </Fragment>
   );
 }
-
-const NoPostsFound = () => {
-  return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: COLORS.background,
-      }}
-    >
-      <Text style={{ color: COLORS.primary, fontSize: 20, fontWeight: "500" }}>
-        No posts found
-      </Text>
-    </View>
-  );
-};

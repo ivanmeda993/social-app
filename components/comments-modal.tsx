@@ -34,8 +34,6 @@ const CommentsModal = () => {
   );
   const addComment = useMutation(api.comments.createComment);
 
-  console.log("COMMENTS", comments);
-
   const handleAddComment = async () => {
     if (!postId || !newComment.trim()) return;
     try {

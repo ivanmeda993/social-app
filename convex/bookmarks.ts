@@ -40,7 +40,7 @@ export const getBookmarks = query({
 
     const bookmarksWithPostData = await Promise.all(
       bookmarks.map(async (bookmark) => {
-        const post = await ctx.db.get(bookmark.postId);
+        const post = (await ctx.db.get(bookmark.postId))!;
         return { ...bookmark, post };
       }),
     );
