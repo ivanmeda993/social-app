@@ -42,7 +42,7 @@ export default function Index() {
         />
       </View>
 
-      {postId && <CommentsModal />}
+      <CommentsModal />
     </Fragment>
   );
 }

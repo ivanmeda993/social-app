@@ -3,8 +3,9 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { usePostStore } from "@/store/post-store";
 import { styles } from "@/styles/feed.styles";
+import { useUser } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { formatDistanceToNow } from "date-fns";
 import { Image } from "expo-image";
 import { Link } from "expo-router";
@@ -30,7 +31,20 @@ type PostProps = {
   };
 };
 const Post = ({ post }: PostProps) => {
+  const { user } = useUser();
+
   const toggleLikeMutation = useMutation(api.posts.toggleLike);
+  const toggleBookmarkMutation = useMutation(api.bookmarks.toggleBookmark);
+  const deletePostMutation = useMutation(api.posts.deletePost);
+  const currentUser = useQuery(
+    api.users.getUserByClerkId,
+    user?.id
+      ? {
+          clerkId: user?.id,
+        }
+      : "skip",
+  );
+
   const { setPostId } = usePostStore();
 
   const handleLike = async () => {
@@ -41,6 +55,21 @@ const Post = ({ post }: PostProps) => {
     }
   };
 
+  const handleBookmark = async () => {
+    try {
+      await toggleBookmarkMutation({ postId: post._id });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await deletePostMutation({ postId: post._id });
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <View style={styles.post}>
       {/* header */}
@@ -58,10 +87,20 @@ const Post = ({ post }: PostProps) => {
           </TouchableOpacity>
         </Link>
 
-        {/* delete button */}
-        <TouchableOpacity>
-          <Ionicons name="ellipsis-horizontal" size={20} color={COLORS.white} />
-        </TouchableOpacity>
+        {/* if the current user is the author of the post, show the delete button  otherwise show the ellipsis */}
+        {currentUser?._id === post.userId ? (
+          <TouchableOpacity onPress={handleDelete}>
+            <Ionicons name="trash-outline" size={20} color={COLORS.white} />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity>
+            <Ionicons
+              name="ellipsis-horizontal"
+              size={20}
+              color={COLORS.white}
+            />
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* image */}
@@ -92,8 +131,12 @@ const Post = ({ post }: PostProps) => {
             />
           </TouchableOpacity>
         </View>
-        <TouchableOpacity>
-          <Ionicons name="bookmark-outline" size={22} color={COLORS.white} />
+        <TouchableOpacity onPress={handleBookmark}>
+          <Ionicons
+            name={post.isBookmarked ? "bookmark" : "bookmark-outline"}
+            size={22}
+            color={post.isBookmarked ? COLORS.primary : COLORS.white}
+          />
         </TouchableOpacity>
       </View>
 

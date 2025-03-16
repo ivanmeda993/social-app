@@ -21,13 +21,17 @@ import Loader from "./loader";
 
 const CommentsModal = () => {
   const { postId, onClose } = usePostStore();
-  const visible = postId !== undefined;
 
   const [newComment, setNewComment] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const comments = useQuery(api.comments.getComments, {
-    postId: postId as Id<"posts">,
-  });
+  const comments = useQuery(
+    api.comments.getComments,
+    postId
+      ? {
+          postId: postId as Id<"posts">,
+        }
+      : "skip",
+  );
   const addComment = useMutation(api.comments.createComment);
 
   console.log("COMMENTS", comments);
@@ -47,7 +51,7 @@ const CommentsModal = () => {
 
   return (
     <Modal
-      visible={visible}
+      visible={!!postId}
       onRequestClose={onClose}
       animationType="slide"
       transparent
