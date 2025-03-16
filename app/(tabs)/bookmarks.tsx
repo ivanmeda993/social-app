@@ -30,7 +30,7 @@ const BookmarksScreen = () => {
           <BookmarkItem {...item} itemWidth={itemWidth} />
         )}
         numColumns={3}
-        estimatedItemSize={width / 3}
+        estimatedItemSize={20}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           padding: 2,

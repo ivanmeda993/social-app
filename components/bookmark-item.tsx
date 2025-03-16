@@ -20,14 +20,7 @@ type BookmarkItemProps = {
   itemWidth: number;
 };
 
-const BookmarkItem = ({
-  post,
-  _id,
-  _creationTime,
-  userId,
-  postId,
-  itemWidth,
-}: BookmarkItemProps) => {
+const BookmarkItem = ({ post, itemWidth }: BookmarkItemProps) => {
   return (
     <View
       style={[

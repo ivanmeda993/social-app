@@ -189,6 +189,16 @@ export const deletePost = mutation({
     // delete the post
     await ctx.db.delete(args.postId);
 
+    // delete related notifications
+    const notifications = await ctx.db
+      .query("notifications")
+      .withIndex("by_post", (q) => q.eq("postId", args.postId))
+      .collect();
+
+    await Promise.all(
+      notifications.map((notification) => ctx.db.delete(notification._id)),
+    );
+
     // decrement the user's post count
     await ctx.db.patch(post.userId, {
       posts: Math.max(0, (currentUser.posts ?? 1) - 1),
