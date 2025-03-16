@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { mutation, query, MutationCtx, QueryCtx } from "./_generated/server";
+import { mutation, MutationCtx, query, QueryCtx } from "./_generated/server";
 
 export const createUser = mutation({
   args: {
@@ -28,6 +28,21 @@ export const createUser = mutation({
       followers: 0,
       following: 0,
       posts: 0,
+    });
+  },
+});
+
+export const updateUser = mutation({
+  args: {
+    fullName: v.string(),
+    bio: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const currentUser = await getCurrentUser(ctx);
+
+    await ctx.db.patch(currentUser._id, {
+      fullName: args.fullName,
+      bio: args.bio,
     });
   },
 });

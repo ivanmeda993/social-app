@@ -15,24 +15,24 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 12,
-    borderBottomWidth: 0.5,
+    borderBottomWidth: 1,
     borderBottomColor: COLORS.surface,
   },
   headerLeft: {
     flexDirection: "row",
     alignItems: "center",
   },
-  username: {
-    fontSize: 20,
-    fontWeight: "700",
-    color: COLORS.white,
-  },
   headerRight: {
     flexDirection: "row",
-    gap: 16,
+    alignItems: "center",
   },
   headerIcon: {
-    padding: 4,
+    marginLeft: 16,
+  },
+  username: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: COLORS.white,
   },
   profileInfo: {
     padding: 16,
@@ -43,14 +43,12 @@ export const styles = StyleSheet.create({
     marginBottom: 16,
   },
   avatarContainer: {
-    marginRight: 32,
+    marginRight: 24,
   },
   avatar: {
-    width: 86,
-    height: 86,
-    borderRadius: 43,
-    borderWidth: 2,
-    borderColor: COLORS.surface,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
   },
   statsContainer: {
     flex: 1,
@@ -61,18 +59,17 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   statNumber: {
-    fontSize: 17,
-    fontWeight: "700",
+    fontSize: 18,
+    fontWeight: "600",
     color: COLORS.white,
-    marginBottom: 4,
   },
   statLabel: {
-    fontSize: 13,
+    fontSize: 12,
     color: COLORS.grey,
+    marginTop: 4,
   },
-
   name: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: "600",
     color: COLORS.white,
     marginBottom: 4,
@@ -80,40 +77,42 @@ export const styles = StyleSheet.create({
   bio: {
     fontSize: 14,
     color: COLORS.white,
-    lineHeight: 20,
+    marginBottom: 16,
   },
   actionButtons: {
     flexDirection: "row",
-    gap: 8,
     marginTop: 8,
   },
   editButton: {
     flex: 1,
     backgroundColor: COLORS.surface,
-    padding: 8,
-    borderRadius: 8,
+    borderRadius: 4,
+    paddingVertical: 8,
     alignItems: "center",
+    marginRight: 8,
   },
   editButtonText: {
     color: COLORS.white,
-    fontWeight: "600",
-    fontSize: 14,
+    fontWeight: "500",
   },
   shareButton: {
     backgroundColor: COLORS.surface,
-    padding: 8,
-    borderRadius: 8,
-    aspectRatio: 1,
+    borderRadius: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
     alignItems: "center",
     justifyContent: "center",
   },
+  postsGrid: {
+    marginTop: 8,
+  },
   gridItem: {
-    flex: 1 / 3,
+    padding: 2,
     aspectRatio: 1,
-    padding: 1,
   },
   gridImage: {
     flex: 1,
+    borderRadius: 4,
   },
   modalContainer: {
     flex: 1,
@@ -227,12 +226,6 @@ export const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-  },
-  postsGrid: {
-    flex: 1,
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
   },
   headerTitle: {
     fontSize: 18,

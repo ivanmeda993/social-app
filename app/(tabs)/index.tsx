@@ -19,8 +19,6 @@ export default function Index() {
   const { postId } = usePostStore();
   const posts = useQuery(api.posts.getFeedPosts);
 
-  console.log("POSTS", posts);
-
   if (posts === undefined) return <Loader />;
   if (posts.length === 0) return <NotDocumentsFound text="No posts found" />;
 
