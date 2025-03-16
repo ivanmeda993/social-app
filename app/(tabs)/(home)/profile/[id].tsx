@@ -1,45 +1,68 @@
-import EditProfileModal from "@/components/edit-profile-modal";
 import Loader from "@/components/loader";
 import { NotDocumentsFound } from "@/components/not-documents-found";
 import ProfileHeader from "@/components/profile-header";
 import SelectedImageModal from "@/components/selected-image-modal";
 import { COLORS } from "@/constants/theme";
 import { api } from "@/convex/_generated/api";
-import { Doc } from "@/convex/_generated/dataModel";
+import { Doc, Id } from "@/convex/_generated/dataModel";
 import { styles } from "@/styles/profile.styles";
-import { useAuth } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
-import { useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { Image } from "expo-image";
-import React, { useState } from "react";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import React, { useEffect, useState } from "react";
 import { Dimensions, Text, TouchableOpacity, View } from "react-native";
 
 const { width } = Dimensions.get("window");
 const numColumns = 3;
 const itemWidth = width / numColumns;
 
-const ProfileScreen = () => {
-  const { signOut, userId } = useAuth();
-
-  const currentUser = useQuery(
-    api.users.getUserByClerkId,
-    userId
-      ? {
-          clerkId: userId,
-        }
-      : "skip",
-  );
+const UserProfileScreen = () => {
+  const { id } = useLocalSearchParams();
+  const router = useRouter();
+  const userId = typeof id === "string" ? id : "";
 
   const [selectedPost, setSelectedPost] = useState<Doc<"posts"> | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
+  const [following, setFollowing] = useState<boolean>(false);
 
-  const posts = useQuery(api.posts.getPostByUserId, {});
+  const user = useQuery(api.users.getUserProfile, {
+    userId: userId as Id<"users">,
+  });
+  const posts = useQuery(api.posts.getPostByUserId, {
+    userId: userId as Id<"users">,
+  });
 
-  if (!currentUser || posts === undefined) return <Loader />;
+  // Proveriti da li korisnik već prati ovog korisnika
+  const isUserFollowing = useQuery(api.users.isFollowing, {
+    followingId: userId as Id<"users">,
+  });
 
-  const handleEditProfile = () => {
-    setIsEditing(true);
+  // Funkcija za praćenje/otpraćivanje korisnika
+  const toggleFollow = useMutation(api.users.toggleFollow);
+
+  // Ažuriramo lokalni state kada se promeni isUserFollowing
+  useEffect(() => {
+    if (isUserFollowing !== undefined) {
+      setFollowing(isUserFollowing);
+    }
+  }, [isUserFollowing]);
+
+  if (!user || posts === undefined || isUserFollowing === undefined)
+    return <Loader />;
+
+  const handleFollow = async () => {
+    try {
+      // Optimistički update - odmah menjamo UI
+      setFollowing(!following);
+
+      // Pozivamo API
+      await toggleFollow({ followingId: userId as Id<"users"> });
+    } catch (error) {
+      // Ako dođe do greške, vraćamo prethodno stanje
+      setFollowing(isUserFollowing);
+      console.error("Error toggling follow:", error);
+    }
   };
 
   return (
@@ -47,15 +70,12 @@ const ProfileScreen = () => {
       <View style={styles.container}>
         <View style={styles.header}>
           <View style={styles.headerLeft}>
-            <Text style={styles.username}>{currentUser.fullName}</Text>
-          </View>
-          <View style={styles.headerRight}>
-            <TouchableOpacity
-              style={styles.headerIcon}
-              onPress={() => signOut()}
-            >
-              <Ionicons name="log-out-outline" size={24} color={COLORS.white} />
+            <TouchableOpacity onPress={() => router.back()}>
+              <Ionicons name="arrow-back" size={24} color={COLORS.white} />
             </TouchableOpacity>
+            <Text style={[styles.headerTitle, { marginLeft: 16 }]}>
+              {user.username || user.fullName}
+            </Text>
           </View>
         </View>
 
@@ -77,8 +97,10 @@ const ProfileScreen = () => {
           )}
           ListHeaderComponent={
             <ProfileHeader
-              user={currentUser}
-              action={() => setIsEditing(true)}
+              user={user}
+              isOtherUser={true}
+              action={handleFollow}
+              isFollowing={following}
             />
           }
           ListEmptyComponent={
@@ -93,12 +115,6 @@ const ProfileScreen = () => {
         />
       </View>
 
-      <EditProfileModal
-        isVisible={isEditing}
-        setIsEditing={setIsEditing}
-        currentUser={currentUser}
-      />
-
       <SelectedImageModal
         post={selectedPost}
         onClose={() => setSelectedPost(null)}
@@ -107,4 +123,4 @@ const ProfileScreen = () => {
   );
 };
 
-export default ProfileScreen;
+export default UserProfileScreen;

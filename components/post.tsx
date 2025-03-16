@@ -8,7 +8,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useMutation, useQuery } from "convex/react";
 import { formatDistanceToNow } from "date-fns";
 import { Image } from "expo-image";
-import { Link } from "expo-router";
+import { useRouter } from "expo-router";
 import { Text, TouchableOpacity, View } from "react-native";
 type PostProps = {
   post: {
@@ -32,7 +32,7 @@ type PostProps = {
 };
 const Post = ({ post }: PostProps) => {
   const { user } = useUser();
-
+  const router = useRouter();
   const toggleLikeMutation = useMutation(api.posts.toggleLike);
   const toggleBookmarkMutation = useMutation(api.bookmarks.toggleBookmark);
   const deletePostMutation = useMutation(api.posts.deletePost);
@@ -70,22 +70,31 @@ const Post = ({ post }: PostProps) => {
       console.error(error);
     }
   };
+
+  const navigateToProfile = () => {
+    if (currentUser?._id === post.userId) {
+      router.push("/(tabs)/profile");
+    } else {
+      router.push(`/(tabs)/(home)/profile/${post.author._id}`);
+    }
+  };
   return (
     <View style={styles.post}>
       {/* header */}
       <View style={styles.postHeader}>
-        <Link href={`/(tabs)/notifications`}>
-          <TouchableOpacity style={styles.postHeaderLeft}>
-            <Image
-              source={post.author?.image}
-              style={styles.postAvatar}
-              contentFit="cover"
-              transition={200}
-              cachePolicy="memory-disk"
-            />
-            <Text style={styles.postUsername}>{post.author?.username}</Text>
-          </TouchableOpacity>
-        </Link>
+        <TouchableOpacity
+          style={styles.postHeaderLeft}
+          onPress={navigateToProfile}
+        >
+          <Image
+            source={post.author?.image}
+            style={styles.postAvatar}
+            contentFit="cover"
+            transition={200}
+            cachePolicy="memory-disk"
+          />
+          <Text style={styles.postUsername}>{post.author?.username}</Text>
+        </TouchableOpacity>
 
         {/* if the current user is the author of the post, show the delete button  otherwise show the ellipsis */}
         {currentUser?._id === post.userId ? (

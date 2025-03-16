@@ -1,23 +1,24 @@
 import { COLORS } from "@/constants/theme";
+import { Doc } from "@/convex/_generated/dataModel";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type ProfileHeaderProps = {
-  user: {
-    _id: string;
-    fullName: string;
-    username: string;
-    image: string;
-    bio?: string;
-    posts: number;
-    followers: number;
-    following: number;
-  };
-  onEditProfile: () => void;
+  user: Doc<"users">;
+  isOtherUser?: boolean;
+  isFollowing?: boolean;
+  action: () => void;
 };
 
-const ProfileHeader = ({ user, onEditProfile }: ProfileHeaderProps) => {
+const ProfileHeader = ({
+  user,
+  isOtherUser = false,
+  action,
+  isFollowing,
+}: ProfileHeaderProps) => {
+  console.log("isFollowing:", isFollowing); // Dodajemo log za debugging
+
   return (
     <View>
       <View style={styles.profileInfo}>
@@ -50,9 +51,29 @@ const ProfileHeader = ({ user, onEditProfile }: ProfileHeaderProps) => {
         {user.bio && <Text style={styles.bio}>{user.bio}</Text>}
 
         <View style={styles.actionButtons}>
-          <TouchableOpacity style={styles.editButton} onPress={onEditProfile}>
-            <Text style={styles.editButtonText}>Edit Profile</Text>
-          </TouchableOpacity>
+          {isOtherUser ? (
+            <TouchableOpacity
+              style={[
+                styles.actionButton,
+                isFollowing ? styles.followingButton : styles.followButton,
+              ]}
+              onPress={action}
+            >
+              <Text
+                style={
+                  isFollowing
+                    ? styles.followingButtonText
+                    : styles.followButtonText
+                }
+              >
+                {isFollowing ? "Following" : "Follow"}
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity style={styles.actionButton} onPress={action}>
+              <Text style={styles.editButtonText}>Edit Profile</Text>
+            </TouchableOpacity>
+          )}
           <TouchableOpacity style={styles.shareButton}>
             <Ionicons name="share-outline" size={24} color={COLORS.white} />
           </TouchableOpacity>
@@ -112,7 +133,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginTop: 8,
   },
-  editButton: {
+  actionButton: {
     flex: 1,
     backgroundColor: COLORS.surface,
     borderRadius: 4,
@@ -131,6 +152,22 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     alignItems: "center",
     justifyContent: "center",
+  },
+  followButton: {
+    backgroundColor: COLORS.primary,
+  },
+  followingButton: {
+    backgroundColor: COLORS.surface,
+    borderWidth: 1,
+    borderColor: COLORS.primary,
+  },
+  followButtonText: {
+    color: COLORS.background,
+    fontWeight: "500",
+  },
+  followingButtonText: {
+    color: COLORS.white,
+    fontWeight: "500",
   },
 });
 
