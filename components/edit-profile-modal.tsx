@@ -60,15 +60,21 @@ const EditProfileModal = ({
     }
   };
 
+  const handleClose = () => {
+    if (isVisible) {
+      setIsEditing(false);
+    }
+  };
+
   return (
     <Modal
       visible={isVisible}
-      onRequestClose={() => setIsEditing(false)}
+      onRequestClose={handleClose}
       transparent={true}
       animationType="slide"
     >
       <BlurView intensity={20} style={StyleSheet.absoluteFill} tint="dark">
-        <TouchableWithoutFeedback onPress={() => setIsEditing(false)}>
+        <TouchableWithoutFeedback onPress={handleClose}>
           <View style={styles.modalBackdrop}>
             <TouchableWithoutFeedback
               onPress={(e) => {
@@ -83,7 +89,7 @@ const EditProfileModal = ({
                 <View style={styles.modalContent}>
                   <View style={styles.modalHeader}>
                     <Text style={styles.modalTitle}>Edit Profile</Text>
-                    <TouchableOpacity onPress={() => setIsEditing(false)}>
+                    <TouchableOpacity onPress={handleClose}>
                       <Ionicons name="close" size={24} color={COLORS.primary} />
                     </TouchableOpacity>
                   </View>

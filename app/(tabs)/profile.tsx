@@ -39,64 +39,67 @@ const ProfileScreen = () => {
   if (!currentUser || posts === undefined) return <Loader />;
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.headerLeft}>
-          <Text style={styles.username}>{currentUser.fullName}</Text>
+    <>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <View style={styles.headerLeft}>
+            <Text style={styles.username}>{currentUser.fullName}</Text>
+          </View>
+          <View style={styles.headerRight}>
+            <TouchableOpacity
+              style={styles.headerIcon}
+              onPress={() => signOut()}
+            >
+              <Ionicons name="log-out-outline" size={24} color={COLORS.white} />
+            </TouchableOpacity>
+          </View>
         </View>
-        <View style={styles.headerRight}>
-          <TouchableOpacity style={styles.headerIcon} onPress={() => signOut()}>
-            <Ionicons name="log-out-outline" size={24} color={COLORS.white} />
-          </TouchableOpacity>
-        </View>
+
+        <FlashList
+          data={posts}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              style={[styles.gridItem, { width: itemWidth, height: itemWidth }]}
+              onPress={() => setSelectedPost(item)}
+            >
+              <Image
+                source={item.imageUrl}
+                style={styles.gridImage}
+                contentFit="cover"
+                transition={100}
+                cachePolicy="memory-disk"
+              />
+            </TouchableOpacity>
+          )}
+          ListHeaderComponent={
+            <ProfileHeader
+              user={currentUser}
+              onEditProfile={() => setIsEditing(true)}
+            />
+          }
+          ListEmptyComponent={
+            <NotDocumentsFound text="No posts yet" icon="images-outline" />
+          }
+          numColumns={numColumns}
+          estimatedItemSize={itemWidth}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{
+            paddingBottom: 20,
+          }}
+        />
       </View>
 
-      <FlashList
-        data={posts}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={[styles.gridItem, { width: itemWidth, height: itemWidth }]}
-            onPress={() => setSelectedPost(item)}
-          >
-            <Image
-              source={item.imageUrl}
-              style={styles.gridImage}
-              contentFit="cover"
-              transition={100}
-              cachePolicy="memory-disk"
-            />
-          </TouchableOpacity>
-        )}
-        ListHeaderComponent={
-          <ProfileHeader
-            user={currentUser}
-            onEditProfile={() => setIsEditing(true)}
-          />
-        }
-        ListEmptyComponent={
-          <NotDocumentsFound text="No posts yet" icon="images-outline" />
-        }
-        numColumns={numColumns}
-        estimatedItemSize={itemWidth}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingBottom: 20,
-        }}
+      <EditProfileModal
+        isVisible={isEditing}
+        setIsEditing={setIsEditing}
+        currentUser={currentUser}
       />
-      {isEditing && (
-        <EditProfileModal
-          isVisible={isEditing}
-          setIsEditing={setIsEditing}
-          currentUser={currentUser}
-        />
-      )}
-      {selectedPost && (
-        <SelectedImageModal
-          post={selectedPost}
-          onClose={() => setSelectedPost(null)}
-        />
-      )}
-    </View>
+
+      <SelectedImageModal
+        post={selectedPost}
+        onClose={() => setSelectedPost(null)}
+      />
+    </>
   );
 };
 
