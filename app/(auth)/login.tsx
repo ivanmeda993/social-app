@@ -2,14 +2,11 @@ import { COLORS } from "@/constants/theme";
 import { styles } from "@/styles/auth.styles";
 import { useSSO } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
 import React from "react";
 import { Alert, Text, TouchableOpacity, View } from "react-native";
 
 const LoginScreen = () => {
   const { startSSOFlow } = useSSO();
-
-  const router = useRouter();
 
   const handleGoogleSignIn = async () => {
     try {
@@ -19,7 +16,6 @@ const LoginScreen = () => {
 
       if (setActive && createdSessionId) {
         setActive({ session: createdSessionId });
-        router.replace("/(tabs)");
       }
     } catch (error) {
       // notify user

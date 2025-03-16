@@ -28,6 +28,9 @@ export const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: COLORS.surface,
   },
+  postsContentContainer: {
+    paddingBottom: 60,
+  },
   storyWrapper: {
     alignItems: "center",
     marginHorizontal: 8,
