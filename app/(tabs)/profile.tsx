@@ -1,3 +1,4 @@
+import EditProfileModal from "@/components/edit-profile-modal";
 import Loader from "@/components/loader";
 import { NotDocumentsFound } from "@/components/not-documents-found";
 import ProfileHeader from "@/components/profile-header";
@@ -9,7 +10,7 @@ import { styles } from "@/styles/profile.styles";
 import { useAuth } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
-import { useMutation, useQuery } from "convex/react";
+import { useQuery } from "convex/react";
 import { Image } from "expo-image";
 import React, { useState } from "react";
 import { Dimensions, Text, TouchableOpacity, View } from "react-native";
@@ -30,23 +31,10 @@ const ProfileScreen = () => {
       : "skip",
   );
 
-  const [editedProfile, setEditedProfile] = useState({
-    fullName: currentUser?.fullName || "",
-    bio: currentUser?.bio || "",
-  });
-
   const [selectedPost, setSelectedPost] = useState<Doc<"posts"> | null>(null);
   const [isEditing, setIsEditing] = useState(false);
 
   const posts = useQuery(api.posts.getPostByUserId, {});
-
-  const updateProfile = useMutation(api.users.updateUser);
-
-  const handleSaveProfile = async () => {};
-
-  const handleEditProfile = () => {
-    setIsEditing(true);
-  };
 
   if (!currentUser || posts === undefined) return <Loader />;
 
@@ -80,7 +68,10 @@ const ProfileScreen = () => {
           </TouchableOpacity>
         )}
         ListHeaderComponent={
-          <ProfileHeader user={currentUser} onEditProfile={handleEditProfile} />
+          <ProfileHeader
+            user={currentUser}
+            onEditProfile={() => setIsEditing(true)}
+          />
         }
         ListEmptyComponent={
           <NotDocumentsFound text="No posts yet" icon="images-outline" />
@@ -92,6 +83,13 @@ const ProfileScreen = () => {
           paddingBottom: 20,
         }}
       />
+      {isEditing && (
+        <EditProfileModal
+          isVisible={isEditing}
+          setIsEditing={setIsEditing}
+          currentUser={currentUser}
+        />
+      )}
       {selectedPost && (
         <SelectedImageModal
           post={selectedPost}

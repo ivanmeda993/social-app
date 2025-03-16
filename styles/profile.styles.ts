@@ -161,6 +161,9 @@ export const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 8,
     alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 12,
     marginTop: 20,
   },
   saveButtonText: {
@@ -170,7 +173,6 @@ export const styles = StyleSheet.create({
   },
   modalBackdrop: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.9)",
     justifyContent: "center",
   },
   postDetailContainer: {
