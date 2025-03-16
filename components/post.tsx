@@ -1,13 +1,14 @@
 import { COLORS } from "@/constants/theme";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { usePostStore } from "@/store/post-store";
 import { styles } from "@/styles/feed.styles";
 import { Ionicons } from "@expo/vector-icons";
 import { useMutation } from "convex/react";
+import { formatDistanceToNow } from "date-fns";
 import { Image } from "expo-image";
 import { Link } from "expo-router";
 import { Text, TouchableOpacity, View } from "react-native";
-
 type PostProps = {
   post: {
     _id: Id<"posts">;
@@ -30,6 +31,7 @@ type PostProps = {
 };
 const Post = ({ post }: PostProps) => {
   const toggleLikeMutation = useMutation(api.posts.toggleLike);
+  const { setPostId } = usePostStore();
 
   const handleLike = async () => {
     try {
@@ -86,6 +88,7 @@ const Post = ({ post }: PostProps) => {
               name="chatbubble-outline"
               size={22}
               color={COLORS.white}
+              onPress={() => setPostId(post._id)}
             />
           </TouchableOpacity>
         </View>
@@ -108,11 +111,19 @@ const Post = ({ post }: PostProps) => {
           </View>
         )}
 
-        <TouchableOpacity>
-          <Text style={styles.commentText}>View all comments</Text>
-        </TouchableOpacity>
+        {post.comments > 0 && (
+          <TouchableOpacity onPress={() => setPostId(post._id)}>
+            <Text style={styles.commentText}>
+              View all {post.comments} comments
+            </Text>
+          </TouchableOpacity>
+        )}
 
-        <Text style={styles.timeAgo}>2 hours ago</Text>
+        <Text style={styles.timeAgo}>
+          {formatDistanceToNow(post._creationTime, {
+            addSuffix: true,
+          })}
+        </Text>
       </View>
     </View>
   );

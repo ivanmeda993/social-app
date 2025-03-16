@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { mutation, QueryCtx, MutationCtx } from "./_generated/server";
+import { mutation, MutationCtx, QueryCtx } from "./_generated/server";
 
 export const createUser = mutation({
   args: {
@@ -51,6 +51,6 @@ export const getCurrentUser = async (ctx: QueryCtx | MutationCtx) => {
     return currentUser;
   } catch (error) {
     console.error(error);
-    throw new Error("Failed to get current user");
+    throw new Error("Unauthorized");
   }
 };

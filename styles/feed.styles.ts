@@ -156,9 +156,7 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
   },
-  commentsList: {
-    flex: 1,
-  },
+
   commentContainer: {
     flexDirection: "row",
     paddingHorizontal: 16,
