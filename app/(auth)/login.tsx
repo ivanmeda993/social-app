@@ -4,27 +4,26 @@ import { useSSO } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Alert, Text, TouchableOpacity, View } from "react-native";
 
 const LoginScreen = () => {
   const { startSSOFlow } = useSSO();
+
   const router = useRouter();
 
   const handleGoogleSignIn = async () => {
-    console.log("handleGoogleSignIn");
     try {
       const { createdSessionId, setActive } = await startSSOFlow({
         strategy: "oauth_google",
       });
-      console.log("createdSessionId", createdSessionId);
-      console.log("setActive", setActive);
 
       if (setActive && createdSessionId) {
         setActive({ session: createdSessionId });
         router.replace("/(tabs)");
       }
     } catch (error) {
-      console.log("error", error);
+      // notify user
+      Alert.alert("Error", "Failed to sign in with Google");
       console.error("Google sign in error:", error);
     }
   };

@@ -1,6 +1,6 @@
 // styles/create.styles.ts
-import { StyleSheet, Dimensions } from "react-native";
 import { COLORS } from "@/constants/theme";
+import { Dimensions, StyleSheet } from "react-native";
 
 const { width } = Dimensions.get("window");
 
@@ -65,7 +65,7 @@ export const styles = StyleSheet.create({
   },
   imageSection: {
     width: width,
-    height: width,
+    height: "70%",
     backgroundColor: COLORS.surface,
     justifyContent: "center",
     alignItems: "center",

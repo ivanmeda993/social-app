@@ -8,13 +8,13 @@ const AuthLayout = () => {
   const segments = useSegments();
   const router = useRouter();
 
-  const isAuthRoute = segments[0] === "(auth)";
-
   useEffect(() => {
+    const isAuthRoute = segments[0] === "(auth)";
+
     if (!isLoaded) return;
     if (!isAuthRoute && !isSignedIn) router.replace("/(auth)/login");
     else if (isAuthRoute && isSignedIn) router.replace("/(tabs)");
-  }, [isLoaded, isSignedIn]);
+  }, [isLoaded, isSignedIn, segments]);
 
   if (!isLoaded) return null;
 
