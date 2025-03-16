@@ -3,6 +3,7 @@ import { Id } from "@/convex/_generated/dataModel";
 import { Ionicons } from "@expo/vector-icons";
 import { formatDistanceToNow } from "date-fns";
 import { Image } from "expo-image";
+import { router } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type NotificationItemProps = {
@@ -56,8 +57,15 @@ const NotificationItem = ({ notification }: NotificationItemProps) => {
     }
   };
 
+  const handleNotificationPress = () => {
+    router.push(`/(tabs)/(home)/profile/${notification.sender._id}`);
+  };
+
   return (
-    <TouchableOpacity style={styles.container}>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={handleNotificationPress}
+    >
       <View style={styles.content}>
         <Image
           source={notification.sender.image}

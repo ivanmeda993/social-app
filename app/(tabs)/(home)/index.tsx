@@ -11,16 +11,25 @@ import { useAuth } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
 import { useQuery } from "convex/react";
-import { Fragment } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Fragment, useState } from "react";
+import { RefreshControl, Text, TouchableOpacity, View } from "react-native";
 
 export default function Index() {
+  const [refreshing, setRefreshing] = useState(false);
+
   const { signOut } = useAuth();
   const { postId } = usePostStore();
   const posts = useQuery(api.posts.getFeedPosts);
 
   if (posts === undefined) return <Loader />;
   if (posts.length === 0) return <NotDocumentsFound text="No posts found" />;
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1000);
+  };
 
   return (
     <Fragment>
@@ -40,6 +49,14 @@ export default function Index() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.postsContentContainer}
           ListHeaderComponent={<StoryList />}
+          refreshing={refreshing}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={handleRefresh}
+              tintColor={COLORS.primary}
+            />
+          }
         />
       </View>
 
